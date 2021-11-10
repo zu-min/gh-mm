@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+
+branch=$1
+if [ !$branch ] && [ -z $(git branch -a --format="%(refname:short)" | grep -e "^$branch$") ]; then
+  echo "reqired base branch name"
+  exit 1
+fi
+
+default_branch=$(git remote show origin | grep 'HEAD branch' | awk '{print $NF}')
+
+git checkout $branch
+git pull
+rev=$(git rev-parse --short origin/master)
+new_branch="$branch-merge-$default_branch-$rev"
+
+if [ -z $(git branch -a --format="%(refname:short)" | grep -e "^$new_branch$") ]; then
+  git checkout -b $new_branch
+else
+  git checkout $new_branch
+fi
+
+git merge $rev
