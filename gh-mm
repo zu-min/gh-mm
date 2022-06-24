@@ -23,5 +23,5 @@ fi
 git merge $rev
 
 if [ -z $(git diff --name-only --diff-filter=U -z | tr -d "\0") ]; then
-  gh pr create --base $branch --title "[MM] $branch merge $default_branch-$rev"
+  gh pr create --base $branch --title "[MM] $branch merge $default_branch-$rev" --label "skip_rubocop"
 fi
